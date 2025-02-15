@@ -1,0 +1,9 @@
+# Ignore target and build files
+backend/demo/target/
+frontend/foodmanagement/node_modules/
+frontend/foodmanagement/build/
+*.log
+.env
+.idea/
+.vscode/
+.DS_Store

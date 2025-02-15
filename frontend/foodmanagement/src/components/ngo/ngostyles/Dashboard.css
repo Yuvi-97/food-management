@@ -1,0 +1,269 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .dashboard-container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dashboard-title {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 10px;
+  }
+  
+  .dashboard-description {
+    font-size: 1.2rem;
+    color: #777;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  .ngo-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+  
+  .ngo-card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+  }
+  
+  .ngo-card:hover {
+    transform: translateY(-10px);
+  }
+  
+  .ngo-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  
+  .ngo-content {
+    margin-top: 15px;
+  }
+  
+  .ngo-name {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .ngo-mission {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 15px;
+  }
+  
+  .btn {
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    background-color: #45a049;
+  }
+  
+  .btn-secondary {
+    background-color: #FF5722;
+    color: white;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #e64a19;
+  }
+  
+  /* Overlay for the Form */
+  .form-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    transition: opacity 0.3s ease-in-out;
+  }
+  
+  /* Form Container */
+  .form-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 10px;
+    width: 450px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  
+  .form-container h3 {
+    text-align: center;
+    font-size: 1.8rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .form-container form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .form-container label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #444;
+  }
+  
+  .form-container input,
+  .form-container textarea {
+    margin-bottom: 20px;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+  
+  .form-container input:focus,
+  .form-container textarea:focus {
+    border-color: #4CAF50;
+    outline: none;
+  }
+  
+  .form-container textarea {
+    resize: vertical;
+    height: 120px;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .form-actions button {
+    width: 48%;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+  
+  .form-actions .btn-primary {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .form-actions .btn-primary:hover {
+    background-color: #45a049;
+  }
+  
+  .form-actions .btn-secondary {
+    background-color: #FF5722;
+    color: white;
+  }
+  
+  .form-actions .btn-secondary:hover {
+    background-color: #e64a19;
+  }
+  
+  /* Charts Styling */
+  .chart-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #333;
+    margin-top: 40px;
+    margin-bottom: 20px;
+  }
+  
+  .responsive-container {
+    margin-top: 20px;
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    padding: 10px;
+  }
+  /* Style for the form container */
+.form-container {
+    width: 100%;
+    max-width: 600px; /* Max width for the form */
+    padding: 20px;
+    background-color: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    position: relative;
+    max-height: 80vh; /* Limit height */
+    overflow-y: auto; /* Enable vertical scroll */
+  }
+  
+  /* Scroll styling */
+  .form-container::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .form-container::-webkit-scrollbar-thumb {
+    background-color: #888;
+    border-radius: 4px;
+  }
+  
+  .form-container::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
+  }
+  
+  /* Styling the form elements */
+  input, textarea {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  
+  button {
+    padding: 12px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
