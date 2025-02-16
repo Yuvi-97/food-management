@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import axios from "axios";
+import "../ngostyles/CommunityHub.css";
+
+const API_KEY = "AIzaSyDMJBTfQ4q6oK5RGGCN5ZPW1CuIBmAKYIE";  // Security Risk: Exposed API Key
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 const CommunityHub = () => {
   const [messages, setMessages] = useState([]);
@@ -12,37 +16,43 @@ const CommunityHub = () => {
     setMessages([...messages, userMessage]);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/chatbot", {
-        message: input,
+      const response = await axios.post(API_URL, {
+        contents: [{ parts: [{ text: input }] }],
       });
 
-      const botMessage = { sender: "Bot", text: response.data.reply };
+      const botReply =
+        response.data.candidates?.[0]?.content?.parts?.[0]?.text || "No response";
+
+      const botMessage = { sender: "Bot", text: botReply };
       setMessages([...messages, userMessage, botMessage]);
     } catch (error) {
       console.error("Error sending message:", error);
+      setMessages([...messages, userMessage, { sender: "Bot", text: "Error fetching response" }]);
     }
 
     setInput("");
   };
 
   return (
-    <div style={{ maxWidth: "400px", margin: "auto", padding: "20px", border: "1px solid #ccc", borderRadius: "10px" }}>
-      <h3>Community Hub</h3>
-      <div style={{ minHeight: "200px", overflowY: "auto", border: "1px solid #ddd", padding: "10px", marginBottom: "10px" }}>
+    <div className="chat-container">
+      <h3 className="chat-title">Community Hub</h3>
+      <div className="chat-box">
         {messages.map((msg, index) => (
-          <p key={index} style={{ textAlign: msg.sender === "You" ? "right" : "left", margin: "5px 0" }}>
+          <div key={index} className={`message ${msg.sender === "You" ? "user" : "bot"}`}>
             <strong>{msg.sender}:</strong> {msg.text}
-          </p>
+          </div>
         ))}
       </div>
-      <input
-        type="text"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        placeholder="Type a message..."
-        style={{ width: "70%", padding: "5px" }}
-      />
-      <button onClick={sendMessage} style={{ width: "25%", padding: "5px", marginLeft: "5px" }}>Send</button>
+      <div className="chat-input-container">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder="Type a message..."
+          className="chat-input"
+        />
+        <button onClick={sendMessage} className="chat-button">Send</button>
+      </div>
     </div>
   );
 };
