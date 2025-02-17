@@ -47,7 +47,7 @@ const LiveTracking = () => {
 
   const fetchAcceptedOrders = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/donations/all");
+      const response = await axios.get("http://192.168.181.89:8080/api/donations/all");
       const inProgressOrders = response.data.filter((order) => order.status === "In Progress");
       setAcceptedOrders(inProgressOrders);
     } catch (error) {
@@ -74,7 +74,7 @@ const LiveTracking = () => {
   const handleFinishDelivery = async () => {
     if (!selectedOrder) return;
     try {
-      await axios.put(`http://localhost:8080/api/donations/update-status/${selectedOrder.id}?status=Completed`);
+      await axios.put(`http://192.168.181.89:8080/api/donations/update-status/${selectedOrder.id}?status=Completed`);
       fetchAcceptedOrders(); // Refresh the order list
       setSelectedOrder(null); // Clear the tracking view
     } catch (error) {

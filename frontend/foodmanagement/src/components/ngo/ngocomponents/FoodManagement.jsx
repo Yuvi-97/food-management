@@ -22,8 +22,8 @@ const FoodManagement = () => {
 
   const fetchData = async () => {
     try {
-      const pendingRes = await axios.get("http://localhost:8080/api/donations/pending");
-      const allRes = await axios.get("http://localhost:8080/api/donations/all");
+      const pendingRes = await axios.get("http://192.168.181.89:8080/api/donations/pending");
+      const allRes = await axios.get("http://192.168.181.89:8080/api/donations/all");
 
       const allDonations = allRes.data;
       const pendingDonations = pendingRes.data;
@@ -39,7 +39,7 @@ const FoodManagement = () => {
 
   const updateDonationStatus = async (id, status) => {
     try {
-      await axios.put(`http://localhost:8080/api/donations/update-status/${id}`, null, {
+      await axios.put(`http://192.168.181.89:8080/api/donations/update-status/${id}`, null, {
         params: { status },
       });
       fetchData(); // Refresh the data after update

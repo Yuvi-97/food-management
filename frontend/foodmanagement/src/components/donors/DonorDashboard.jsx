@@ -4,7 +4,7 @@ import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
 
-const API_URL = "http://localhost:8080/api/donations";
+const API_URL = "http://192.168.181.89:8080/api/donations";
 
 const DonorDashboard = () => {
   const [activeSection, setActiveSection] = useState(""); // "food", "waste", "history", "receive"
