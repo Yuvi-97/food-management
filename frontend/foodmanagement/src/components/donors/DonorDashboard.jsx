@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../Header/Header";
@@ -8,7 +6,6 @@ import "./DonorDashboard.css";
 
 import LocationPicker from "./locationPicker";
 import api from "../api/apiInstance";
-import LocationPicker from "./LocationPicker";
 const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
@@ -62,9 +59,9 @@ const DonorDashboard = () => {
     if (expirationDate) formData.append("expirationDate", expirationDate);
     if (file) formData.append("file", file);
     try {
-      const response = await api.post(`${API_URL}/add`, formData, {
+      const response = await api.post(`${API_URL}/add, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      });
+      }`);
       setHistory([response.data, ...history]);
       setRewardPoints(rewardPoints + 10);
       resetForm();
@@ -113,26 +110,26 @@ const DonorDashboard = () => {
 
       <div className="donation-options">
             <button onClick={() => setShowPopup(true)}>Donate Food 🍛</button>
-            <button onClick={() => setShowPopup(true)}>Donate Waste 🗑️</button>
+            <button onClick={() => setShowPopup(true)}>Donate Waste 🗑</button>
             <button onClick={() => setActiveSection("history")}>View Donation History 📜</button>
-            <button onClick={() => setActiveSection("receive")}>Receive Food 🍽️</button>
+            <button onClick={() => setActiveSection("receive")}>Receive Food 🍽</button>
         </div>
       
       <div className="stats-section">
         <h2>India's Hunger Crisis</h2>
-        <p>⚠️ Over 190 million people in India go hungry daily.</p>
-        <p>⚠️ 7,000 people die of hunger-related causes every day.</p>
-        <p>⚠️ 40% of the food produced in India goes to waste.</p>
+        <p>⚠ Over 190 million people in India go hungry daily.</p>
+        <p>⚠ 7,000 people die of hunger-related causes every day.</p>
+        <p>⚠ 40% of the food produced in India goes to waste.</p>
         <h3>How You Can Help:</h3>
-        <p>🍽️ Donating food helps bridge the gap between excess and scarcity.</p>
+        <p>🍽 Donating food helps bridge the gap between excess and scarcity.</p>
         <p>🌱 Reducing waste means a more sustainable planet.</p>
       </div>
       
       <div className="donor-benefits">
         <h2>Why Donate?</h2>
-        <p>✔️ Earn Reward Points for Every Donation</p>
-        <p>✔️ Help those in need while reducing food waste</p>
-        <p>✔️ Get recognized as a responsible contributor to society</p>
+        <p>✔ Earn Reward Points for Every Donation</p>
+        <p>✔ Help those in need while reducing food waste</p>
+        <p>✔ Get recognized as a responsible contributor to society</p>
       </div>
 
       <div className="donor-benefits">
@@ -197,7 +194,6 @@ const DonorDashboard = () => {
 
                 <div className="form-group">
                   <label>Upload Image:</label>
-                  <input type="file" onChange={handleFileChange} />
                 </div>
 
                 <button type="submit" className="submit-button">Submit Donation</button>
@@ -212,6 +208,3 @@ const DonorDashboard = () => {
 };
 
 export default DonorDashboard;
-
-
-
