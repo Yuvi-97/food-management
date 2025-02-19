@@ -7,7 +7,7 @@ import com.example.demo.service.AuthService;
 
 @RestController
 @RequestMapping("/auth")
-@CrossOrigin(origins = "http://localhost:3000") // Allow React frontend to access backend
+@CrossOrigin(origins = "*") // Allow React frontend to access backend
 public class AuthController {
 
     @Autowired

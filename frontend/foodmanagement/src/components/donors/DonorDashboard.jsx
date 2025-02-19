@@ -19,6 +19,7 @@ const DonorDashboard = () => {
   const [rewardPoints, setRewardPoints] = useState(0);
   const [receiverName, setReceiverName] = useState("");
   const [receiverContact, setReceiverContact] = useState("");
+  const [donationAmount, setDonationAmount] = useState("");
 
   // Fetch donation history
   useEffect(() => {
@@ -69,29 +70,19 @@ const DonorDashboard = () => {
     setActiveSection("");
   };
 
-  // Close popup
-  const closePopup = () => {
-    setShowPopup(false);
-  };
-
-  // Accept a donation (for receivers)
-  const handleReceive = async (id) => {
-    if (!receiverName || !receiverContact) {
-      alert("Please enter receiver details before accepting.");
+  // Handle monetary donation
+  const handleMoneyDonation = async () => {
+    if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
+      alert("Please enter a valid donation amount.");
       return;
     }
 
     try {
-      await axios.put(`${API_URL}/update-status/${id}`, null, {
-        params: { status: "Received" },
-      });
-
-      const updatedHistory = history.map((item) =>
-        item.id === id ? { ...item, status: "Received" } : item
-      );
-      setHistory(updatedHistory);
+      await axios.post(`${API_URL}/donate-money`, { amount: donationAmount });
+      alert("Thank you for your donation!");
+      setDonationAmount("");
     } catch (error) {
-      console.error("Error updating status:", error);
+      console.error("Error processing donation:", error);
     }
   };
 
@@ -112,104 +103,80 @@ const DonorDashboard = () => {
           </div>
         </div>
 
-        {activeSection && activeSection !== "history" && activeSection !== "receive" && (
-          <button className="reset-button" onClick={resetForm}>Go Back</button>
-        )}
+        {/* New Section: Donor Queries & FAQs */}
+        <div className="donor-info-section">
+          <h2>Have Questions? We Have Answers!</h2>
+          <p>
+            Not sure what to donate? Wondering how our food distribution works?
+            Check out the common questions below or reach out to us!
+          </p>
+          <ul>
+            <li><strong>Q:</strong> What kind of food can I donate? <br /><strong>A:</strong> You can donate grains, vegetables, packaged food, and leftovers (fresh and safe for consumption).</li>
+            <li><strong>Q:</strong> Can I donate expired food? <br /><strong>A:</strong> No, we only accept food that is within its expiration period.</li>
+            <li><strong>Q:</strong> How do I schedule a pickup? <br /><strong>A:</strong> You can select your preferred pickup time in the donation form.</li>
+          </ul>
+        </div>
 
         {/* Donation Form */}
         {activeSection && activeSection !== "history" && activeSection !== "receive" && (
-          <form onSubmit={handleSubmit} className="donation-form">
-            <label>Food Type:</label>
-            <select value={foodType} onChange={(e) => setFoodType(e.target.value)} required>
-              <option value="">Select</option>
-              <option value="grains">Grains</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="packaged">Packaged Goods</option>
-              <option value="leftovers">Leftovers</option>
-            </select>
+          <div className="form-container">
+            <form onSubmit={handleSubmit} className="donation-form">
+              <h2>Donation Form</h2>
+              <div className="form-group">
+                <label>Food Type:</label>
+                <select value={foodType} onChange={(e) => setFoodType(e.target.value)} required>
+                  <option value="">Select</option>
+                  <option value="grains">Grains</option>
+                  <option value="vegetables">Vegetables</option>
+                  <option value="packaged">Packaged Goods</option>
+                  <option value="leftovers">Leftovers</option>
+                </select>
+              </div>
 
-            <label>Quantity (kg/liters):</label>
-            <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+              <div className="form-group">
+                <label>Quantity (kg/liters):</label>
+                <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+              </div>
 
-            {activeSection === "food" && (
-              <>
-                <label>Expiration Date:</label>
-                <input type="date" value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
-              </>
-            )}
+              {activeSection === "food" && (
+                <div className="form-group">
+                  <label>Expiration Date:</label>
+                  <input type="date" value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
+                </div>
+              )}
 
-            <label>Pickup Address:</label>
-            <input type="text" value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} required />
+              <div className="form-group">
+                <label>Pickup Address:</label>
+                <input type="text" value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} required />
+              </div>
 
-            <label>Pickup Time:</label>
-            <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} required />
+              <div className="form-group">
+                <label>Pickup Time:</label>
+                <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} required />
+              </div>
 
-            <label>Upload Image:</label>
-            <input type="file" onChange={handleFileChange} />
+              <div className="form-group">
+                <label>Upload Image:</label>
+                <input type="file" onChange={handleFileChange} />
+              </div>
 
-            <button type="submit">Submit Donation</button>
-          </form>
-        )}
-
-        {/* Donation History */}
-        {activeSection === "history" && (
-          <div className="donation-history">
-            <h3>Donation History 📜</h3>
-            {history.length === 0 ? (
-              <p>No donations made yet.</p>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Food</th>
-                    <th>Quantity</th>
-                    <th>Pickup Time</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.foodType}</td>
-                      <td>{item.quantity} kg</td>
-                      <td>{item.pickupTime}</td>
-                      <td>{item.status}</td>
-                      <td>{new Date(item.timestamp).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+              <button type="submit" className="submit-button">Submit Donation</button>
+            </form>
           </div>
         )}
 
-        {/* Receive Food Section */}
-        {activeSection === "receive" && (
-          <div className="receive-food">
-            <h3>Available Donated Food 🍽️</h3>
-            {history.filter((item) => item.status === "Pending").length === 0 ? (
-              <p>No available donations at the moment.</p>
-            ) : (
-              <>
-                <label>Receiver Name:</label>
-                <input type="text" value={receiverName} onChange={(e) => setReceiverName(e.target.value)} required />
-
-                <label>Receiver Contact:</label>
-                <input type="text" value={receiverContact} onChange={(e) => setReceiverContact(e.target.value)} required />
-
-                <ul>
-                  {history.filter((item) => item.status === "Pending").map((item) => (
-                    <li key={item.id}>
-                      {item.foodType} - {item.quantity} kg
-                      <button onClick={() => handleReceive(item.id)}>Accept</button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
-        )}
+        {/* Monetary Donation Option */}
+        <div className="money-donation">
+          <h2>Support Our Cause</h2>
+          <p>If you can’t donate food, consider supporting us with a monetary donation.</p>
+          <input
+            type="number"
+            placeholder="Enter amount (₹)"
+            value={donationAmount}
+            onChange={(e) => setDonationAmount(e.target.value)}
+          />
+          <button onClick={handleMoneyDonation} className="donate-money-button">Donate Money</button>
+        </div>
       </div>
 
       <Footer />
