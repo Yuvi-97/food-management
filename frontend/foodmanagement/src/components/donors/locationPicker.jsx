@@ -32,19 +32,7 @@ const LocationPicker = ({ onSelectLocation }) => {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
 
-      {location.lat && (
-        <div>
-          <p><strong>Latitude:</strong> {location.lat}</p>
-          <p><strong>Longitude:</strong> {location.lng}</p>
-          <label>Address (optional):</label>
-          <input
-            type="text"
-            value={location.address}
-            onChange={(e) => setLocation({ ...location, address: e.target.value })}
-            placeholder="Enter your address"
-          />
-        </div>
-      )}
+
     </div>
   );
 };

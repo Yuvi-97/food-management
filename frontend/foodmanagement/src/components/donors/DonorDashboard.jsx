@@ -30,9 +30,27 @@ const DonorDashboard = () => {
       .catch(error => console.error("Error fetching donations:", error));
   }, []);
 
-  const handleLocationSelect = (location) => {
-    setPickupAddress(`Lat: ${location.lat}, Lng: ${location.lng}`);
+  const handleLocationSelect = async (location) => {
+    const { lat, lng } = location;
+  
+    try {
+      const response = await axios.get(
+
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}` 
+      );
+  
+      if (response.data && response.data.display_name) {
+        setPickupAddress(response.data.display_name); // Store actual address
+      } else {
+        console.error("No address found for these coordinates.");
+        setPickupAddress(`Lat: ${lat}, Lng: ${lng}`);
+      }
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      setPickupAddress(`Lat: ${lat}, Lng: ${lng}`);
+    }
   };
+  
 
   const handleMoneyDonation = async () => {
     if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
