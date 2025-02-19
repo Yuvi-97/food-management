@@ -3,9 +3,8 @@ import axios from "axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
-
-import LocationPicker from "./locationPicker";
 import api from "../api/apiInstance";
+import LocationPicker from "./locationPicker";
 const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
@@ -28,19 +27,25 @@ const DonorDashboard = () => {
       .then(response => setHistory(response.data))
       .catch(error => console.error("Error fetching donations:", error));
   }, []);
-  const handleLocationSelect = (location) => {
-    const { lat, lng } = location; // Extract latitude and longitude
+  const handleLocationSelect = async (location) => {
+    const { lat, lng } = location;
   
-    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.display_name) {
-          setPickupAddress({ lat, lng, address: data.display_name });
-        } else {
-          setPickupAddress({ lat, lng, address: "Address not found" });
-        }
-      })
-      .catch(() => console.error("Failed to fetch address")); // Replaced setError with console.error
+    try {
+      const response = await axios.get(
+
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}` 
+      );
+  
+      if (response.data && response.data.display_name) {
+        setPickupAddress(response.data.display_name); // Store actual address
+      } else {
+        console.error("No address found for these coordinates.");
+        setPickupAddress(`Lat: ${lat}, Lng: ${lng}`);
+      }
+    } catch (error) {
+      console.error("Error fetching address:", error);
+      setPickupAddress(`Lat: ${lat}, Lng: ${lng}`);
+    }
   };
   
   const handleMoneyDonation = async () => {
@@ -202,6 +207,7 @@ const DonorDashboard = () => {
 
                 <div className="form-group">
                   <label>Upload Image:</label>
+
                   <input type="file" onChange={(e) => setFile(e.target.files[0])} accept="image/*" required />
                 </div>
 

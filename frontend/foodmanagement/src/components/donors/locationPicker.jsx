@@ -44,19 +44,6 @@ const LocationPicker = ({ onSelectLocation }) => {
       <button onClick={getCurrentLocation}>📍 Use Current Location</button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
-
-      {location.lat && (
-        <div>
-          {/* <p><strong>Latitude:</strong> {location.lat}</p>
-          <p><strong>Longitude:</strong> {location.lng}</p> */}
-          <label>Address:</label>
-          <input
-            type="text"
-            value={location.address}
-            readOnly
-          />
-        </div>
-      )}
     </div>
   );
 };
