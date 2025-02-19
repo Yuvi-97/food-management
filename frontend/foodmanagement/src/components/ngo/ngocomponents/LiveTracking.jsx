@@ -1,150 +1,77 @@
 import React, { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, Polyline, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import L from "leaflet";
-import Lottie from "react-lottie";
-import { useNavigate } from "react-router-dom";
-import bikeAnimation from "../ngoassets/bike-animation.json";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import "../ngostyles/LiveTracking.css";
-import axios from "axios";
 
-// Custom Marker Icons
-const userIcon = new L.Icon({
-  iconUrl: markerIcon,
-  shadowUrl: markerShadow,
-  iconSize: [30, 45],
-  iconAnchor: [15, 45],
-});
+const center = [28.7041, 77.1025]; // Default center (Delhi)
 
-const driverIcon = new L.Icon({
-  iconUrl: "https://cdn-icons-png.flaticon.com/512/3448/3448611.png",
-  iconSize: [35, 35],
-  iconAnchor: [15, 45],
-});
+// Dummy donation requests
+const donationRequests = [
+  { id: 1, foodType: "Vegetables", quantity: "10kg", location: [28.7041, 77.1025], address: "Connaught Place, Delhi" },
+  { id: 2, foodType: "Rice", quantity: "20kg", location: [28.5355, 77.3910], address: "Sector 62, Noida" },
+  { id: 3, foodType: "Fruits", quantity: "5kg", location: [28.4595, 77.0266], address: "Cyber Hub, Gurugram" },
+];
 
-const DeliveryAnimation = ({ driverLocation }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (driverLocation) {
-      map.setView(driverLocation, 15, { animate: true });
-    }
-  }, [driverLocation, map]);
-  return null;
-};
+// Dummy delivery route (Delhi → Noida)
+const deliveryPath = [
+  [28.7041, 77.1025], // Start - Delhi
+  [28.6353, 77.2250], // Mid-point 1
+  [28.6139, 77.2090], // Mid-point 2
+  [28.5355, 77.3910], // End - Noida
+];
 
 const LiveTracking = () => {
-  const navigate = useNavigate();
-  const [acceptedOrders, setAcceptedOrders] = useState([]);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const [userLocation, setUserLocation] = useState(null);
-  const [driverLocation, setDriverLocation] = useState(null);
+  const [currentPosition, setCurrentPosition] = useState(deliveryPath[0]);
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    fetchAcceptedOrders();
-  }, []);
+    const interval = setInterval(() => {
+      if (index < deliveryPath.length - 1) {
+        setIndex(index + 1);
+        setCurrentPosition(deliveryPath[index + 1]);
+      }
+    }, 3000); // Move every 3 seconds
 
-  const fetchAcceptedOrders = async () => {
-    try {
-      const response = await axios.get("http://192.168.181.89:8080/api/donations/all");
-      const inProgressOrders = response.data.filter((order) => order.status === "In Progress");
-      setAcceptedOrders(inProgressOrders);
-    } catch (error) {
-      console.error("Error fetching accepted orders:", error);
-    }
-  };
-
-  const handleTrackOrder = (order) => {
-    setSelectedOrder(order);
-
-    const userLoc = {
-      lat: order.latitude || 12.9716, // Replace with actual lat
-      lng: order.longitude || 77.5946, // Replace with actual lng
-    };
-    setUserLocation(userLoc);
-
-    const driverLoc = {
-      lat: userLoc.lat + 0.018,
-      lng: userLoc.lng + 0.018,
-    };
-    setDriverLocation(driverLoc);
-  };
-
-  const handleFinishDelivery = async () => {
-    if (!selectedOrder) return;
-    try {
-      await axios.put(`http://192.168.181.89:8080/api/donations/update-status/${selectedOrder.id}?status=Completed`);
-      fetchAcceptedOrders(); // Refresh the order list
-      setSelectedOrder(null); // Clear the tracking view
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
-
-  const defaultOptions = {
-    loop: true,
-    autoplay: true,
-    animationData: bikeAnimation,
-    rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
-  };
+    return () => clearInterval(interval);
+  }, [index]);
 
   return (
-    <div className="live-tracking">
-      <h2>Live Tracking</h2>
-
-      <div className="order-list">
-        <h3>Accepted Orders</h3>
+    <div style={{ display: "flex" }}>
+      {/* Sidebar */}
+      <div style={{ width: "30%", padding: "20px", background: "#f5f5f5" }}>
+        <h3>Donation Requests</h3>
         <ul>
-          {acceptedOrders.length > 0 ? (
-            acceptedOrders.map((order) => (
-              <li key={order.id}>
-                <strong>{order.foodType}</strong> - {order.quantity} kg
-                <br />
-                Donor: {order.donor}
-                <br />
-                <button className="btn-track" onClick={() => handleTrackOrder(order)}>
-                  Track Order
-                </button>
-              </li>
-            ))
-          ) : (
-            <p>No accepted orders</p>
-          )}
+          {donationRequests.map((request) => (
+            <li key={request.id} style={{ marginBottom: "15px", borderBottom: "1px solid #ccc", paddingBottom: "10px" }}>
+              <strong>{request.foodType}</strong> - {request.quantity}
+              <br />
+              📍 {request.address}
+            </li>
+          ))}
         </ul>
       </div>
 
-      {selectedOrder && (
-        <div className="tracking-section">
-          <h3>Tracking Order: {selectedOrder.foodType}</h3>
-          <p><strong>Quantity:</strong> {selectedOrder.quantity} kg</p>
-          <p><strong>Donor:</strong> {selectedOrder.donor}</p>
-          <button className="btn-finish" onClick={handleFinishDelivery}>Finish Delivery</button>
+      {/* Map Container */}
+      <div style={{ width: "70%" }}>
+        <MapContainer center={center} zoom={10} style={{ height: "500px", width: "100%" }}>
+          {/* OpenStreetMap Tile Layer */}
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {userLocation && driverLocation ? (
-            <div style={{ height: "400px", width: "100%", marginTop: "20px" }}>
-              <MapContainer center={userLocation} zoom={15} className="tracking-map">
-                <TileLayer
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                />
-                <Marker position={userLocation} icon={userIcon}>
-                  <Popup>Receiver Location</Popup>
-                </Marker>
-                <Marker position={driverLocation} icon={driverIcon}>
-                  <Popup>
-                    <Lottie options={defaultOptions} height={50} width={50} />
-                    <p>Delivery Person (2 km away)</p>
-                  </Popup>
-                </Marker>
-                <DeliveryAnimation driverLocation={driverLocation} />
-              </MapContainer>
-            </div>
-          ) : (
-            <p>Loading map...</p>
-          )}
-        </div>
-      )}
+          {/* Markers for Donation Requests */}
+          {donationRequests.map((request) => (
+            <Marker key={request.id} position={request.location}>
+              <Popup>{request.foodType} - {request.quantity}kg <br /> {request.address}</Popup>
+            </Marker>
+          ))}
+
+          {/* Delivery Route */}
+          <Polyline positions={deliveryPath} color="red" />
+
+          {/* Moving Marker (Delivery Vehicle) */}
+          <Marker position={currentPosition}>
+            <Popup>🚚 Delivery Vehicle</Popup>
+          </Marker>
+        </MapContainer>
+      </div>
     </div>
   );
 };

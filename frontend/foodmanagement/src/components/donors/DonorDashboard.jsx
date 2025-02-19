@@ -3,9 +3,11 @@ import axios from "axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
-import LocationPicker from "./locationPicker";
 
-const API_URL = "http://192.168.181.89:8080/api/donations";
+import LocationPicker from "./locationPicker";
+import api from "../api/apiInstance";
+
+const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
   const [activeSection, setActiveSection] = useState(""); 
@@ -72,7 +74,7 @@ const DonorDashboard = () => {
     if (file) formData.append("file", file);
 
     try {
-      const response = await axios.post(`${API_URL}/add`, formData, {
+      const response = await api.post(`${API_URL}/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
