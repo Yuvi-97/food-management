@@ -3,12 +3,14 @@ import axios from "axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
+
+import LocationPicker from "./locationPicker";
 import api from "../api/apiInstance";
 
 const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
-  const [activeSection, setActiveSection] = useState(""); // "food", "waste", "history", "receive"
+  const [activeSection, setActiveSection] = useState(""); 
   const [foodType, setFoodType] = useState("");
   const [quantity, setQuantity] = useState("");
   const [expirationDate, setExpirationDate] = useState("");
@@ -18,25 +20,51 @@ const DonorDashboard = () => {
   const [history, setHistory] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [rewardPoints, setRewardPoints] = useState(0);
-  const [receiverName, setReceiverName] = useState("");
-  const [receiverContact, setReceiverContact] = useState("");
+  const [donationAmount, setDonationAmount] = useState("");
 
-  // Fetch donation history
   useEffect(() => {
     axios.get(`${API_URL}/all`)
       .then(response => setHistory(response.data))
       .catch(error => console.error("Error fetching donations:", error));
   }, []);
 
-  // Handle file upload
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
   };
 
-  // Handle form submission
+  const handleLocationSelect = (location) => {
+    setPickupAddress(`Lat: ${location.lat}, Lng: ${location.lng}`);
+  };
+
+  // ✅ Move resetForm OUTSIDE handleSubmit
+  const resetForm = () => {
+    setFoodType("");
+    setQuantity("");
+    setExpirationDate("");
+    setPickupAddress("");
+    setPickupTime("");
+    setFile(null);
+    setActiveSection("");
+  };
+
+  // ✅ Move handleMoneyDonation OUTSIDE handleSubmit
+  const handleMoneyDonation = async () => {
+    if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
+      alert("Please enter a valid donation amount.");
+      return;
+    }
+
+    try {
+      await axios.post(`${API_URL}/donate-money`, { amount: donationAmount });
+      alert("Thank you for your donation!");
+      setDonationAmount("");
+    } catch (error) {
+      console.error("Error processing donation:", error);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData();
     formData.append("foodType", foodType);
     formData.append("quantity", quantity);
@@ -51,50 +79,25 @@ const DonorDashboard = () => {
       });
 
       setHistory([response.data, ...history]);
-      setShowPopup(true);
       setRewardPoints(rewardPoints + 10);
       resetForm();
+      setShowPopup(false);
     } catch (error) {
       console.error("Error submitting donation:", error);
     }
   };
 
-  // Reset form fields
-  const resetForm = () => {
-    setFoodType("");
-    setQuantity("");
-    setExpirationDate("");
-    setPickupAddress("");
-    setPickupTime("");
-    setFile(null);
-    setActiveSection("");
-  };
+  const [openIndex, setOpenIndex] = useState(null); // Track open question
 
-  // Close popup
-  const closePopup = () => {
-    setShowPopup(false);
-  };
+const faqData = [
+  { question: "How does my donation help?", answer: "Your donation provides food to those in need through partner NGOs and charities." },
+  { question: "Where will the donated food go?", answer: "The donated food is sent to homeless shelters, orphanages, and community kitchens." },
+  { question: "Can I donate multiple times?", answer: "Yes! You can donate as many times as you want and earn reward points." }
+];
 
-  // Accept a donation (for receivers)
-  const handleReceive = async (id) => {
-    if (!receiverName || !receiverContact) {
-      alert("Please enter receiver details before accepting.");
-      return;
-    }
-
-    try {
-      await axios.put(`${API_URL}/update-status/${id}`, null, {
-        params: { status: "Received" },
-      });
-
-      const updatedHistory = history.map((item) =>
-        item.id === id ? { ...item, status: "Received" } : item
-      );
-      setHistory(updatedHistory);
-    } catch (error) {
-      console.error("Error updating status:", error);
-    }
-  };
+const toggleFAQ = (index) => {
+  setOpenIndex(openIndex === index ? null : index); // Toggle open/close
+};
 
   return (
     <>
@@ -106,111 +109,93 @@ const DonorDashboard = () => {
       <div className="donor-dashboard">
         <div className="dashboard-hero">
           <div className="hero-options">
-            <button onClick={() => setActiveSection("food")}>Donate Food 🍛</button>
-            <button onClick={() => setActiveSection("waste")}>Donate Waste 🗑️</button>
+            <button onClick={() => setShowPopup(true)}>Donate Food 🍛</button>
+            <button onClick={() => setShowPopup(true)}>Donate Waste 🗑️</button>
             <button onClick={() => setActiveSection("history")}>View Donation History 📜</button>
             <button onClick={() => setActiveSection("receive")}>Receive Food 🍽️</button>
           </div>
         </div>
 
-        {activeSection && activeSection !== "history" && activeSection !== "receive" && (
-          <button className="reset-button" onClick={resetForm}>Go Back</button>
-        )}
+        {showPopup && (
+          <div className="popup-overlay">
+            <div className="popup">
+              <h2>Donation Form</h2>
+              <form onSubmit={handleSubmit} className="donation-form">
+                <div className="form-group">
+                  <label>Food Type:</label>
+                  <select value={foodType} onChange={(e) => setFoodType(e.target.value)} required>
+                    <option value="">Select</option>
+                    <option value="grains">Grains</option>
+                    <option value="vegetables">Vegetables</option>
+                    <option value="packaged">Packaged Goods</option>
+                    <option value="leftovers">Leftovers</option>
+                  </select>
+                </div>
 
-        {/* Donation Form */}
-        {activeSection && activeSection !== "history" && activeSection !== "receive" && (
-          <form onSubmit={handleSubmit} className="donation-form">
-            <label>Food Type:</label>
-            <select value={foodType} onChange={(e) => setFoodType(e.target.value)} required>
-              <option value="">Select</option>
-              <option value="grains">Grains</option>
-              <option value="vegetables">Vegetables</option>
-              <option value="packaged">Packaged Goods</option>
-              <option value="leftovers">Leftovers</option>
-            </select>
+                <div className="form-group">
+                  <label>Quantity (kg/liters):</label>
+                  <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+                </div>
 
-            <label>Quantity (kg/liters):</label>
-            <input type="number" value={quantity} onChange={(e) => setQuantity(e.target.value)} required />
+                <div className="form-group">
+                  <label>Pickup Address:</label>
+                  <input type="text" value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} required />
+                  <LocationPicker onSelectLocation={handleLocationSelect} />
+                </div>
 
-            {activeSection === "food" && (
-              <>
-                <label>Expiration Date:</label>
-                <input type="date" value={expirationDate} onChange={(e) => setExpirationDate(e.target.value)} />
-              </>
-            )}
+                <div className="form-group">
+                  <label>Pickup Time:</label>
+                  <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} required />
+                </div>
 
-            <label>Pickup Address:</label>
-            <input type="text" value={pickupAddress} onChange={(e) => setPickupAddress(e.target.value)} required />
+                <div className="form-group">
+                  <label>Upload Image:</label>
+                  <input type="file" onChange={handleFileChange} />
+                </div>
 
-            <label>Pickup Time:</label>
-            <input type="time" value={pickupTime} onChange={(e) => setPickupTime(e.target.value)} required />
-
-            <label>Upload Image:</label>
-            <input type="file" onChange={handleFileChange} />
-
-            <button type="submit">Submit Donation</button>
-          </form>
-        )}
-
-        {/* Donation History */}
-        {activeSection === "history" && (
-          <div className="donation-history">
-            <h3>Donation History 📜</h3>
-            {history.length === 0 ? (
-              <p>No donations made yet.</p>
-            ) : (
-              <table>
-                <thead>
-                  <tr>
-                    <th>Food</th>
-                    <th>Quantity</th>
-                    <th>Pickup Time</th>
-                    <th>Status</th>
-                    <th>Date</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((item) => (
-                    <tr key={item.id}>
-                      <td>{item.foodType}</td>
-                      <td>{item.quantity} kg</td>
-                      <td>{item.pickupTime}</td>
-                      <td>{item.status}</td>
-                      <td>{new Date(item.timestamp).toLocaleDateString()}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
+                <button type="submit" className="submit-button">Submit Donation</button>
+                <button type="button" className="close-button" onClick={() => setShowPopup(false)}>Close</button>
+              </form>
+            </div>
           </div>
         )}
 
-        {/* Receive Food Section */}
-        {activeSection === "receive" && (
-          <div className="receive-food">
-            <h3>Available Donated Food 🍽️</h3>
-            {history.filter((item) => item.status === "Pending").length === 0 ? (
-              <p>No available donations at the moment.</p>
-            ) : (
-              <>
-                <label>Receiver Name:</label>
-                <input type="text" value={receiverName} onChange={(e) => setReceiverName(e.target.value)} required />
+     <div className="money-donation">
+      <h2>Support Our Cause</h2>
+      <input
+        type="number"
+        placeholder="Enter amount (₹)"
+        value={donationAmount}
+        onChange={(e) => setDonationAmount(e.target.value)}
+      />
+      <button onClick={handleMoneyDonation} className="donate-money-button">
+        Donate Money
+      </button>
+    </div>
 
-                <label>Receiver Contact:</label>
-                <input type="text" value={receiverContact} onChange={(e) => setReceiverContact(e.target.value)} required />
+    {/* Common Queries Section */}
+    <div className="common-queries">
+      <h2>Common Queries</h2>
+      <ul>
+        {faqData.map((faq, index) => (
+          <li key={index} className="faq-item">
+            <button className="faq-question" onClick={() => toggleFAQ(index)}>
+              {faq.question} {openIndex === index ? "▲" : "▼"}
+            </button>
+            {openIndex === index && <p className="faq-answer">{faq.answer}</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
 
-                <ul>
-                  {history.filter((item) => item.status === "Pending").map((item) => (
-                    <li key={item.id}>
-                      {item.foodType} - {item.quantity} kg
-                      <button onClick={() => handleReceive(item.id)}>Accept</button>
-                    </li>
-                  ))}
-                </ul>
-              </>
-            )}
-          </div>
-        )}
+    {/* Benefits of Donating */}
+    <div className="donor-benefits common-queries">
+      <h2>Why Donate?</h2>
+      <p>✨ Earn reward points for every donation!</p>
+      <p>🌱 Help reduce food waste and support those in need.</p>
+      <p>💖 Be a hero in your community!</p>
+    </div>
+
       </div>
 
       <Footer />

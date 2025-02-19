@@ -20,7 +20,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/donations")
-@CrossOrigin(origins = "http://localhost:3000") // Allow React frontend to access
+@CrossOrigin(origins = "*") // Allow React frontend to access
 public class DonationController {
 
     @Autowired
