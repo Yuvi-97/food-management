@@ -1,14 +1,10 @@
-
-
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
-
-import LocationPicker from "./locationPicker";
 import api from "../api/apiInstance";
-import LocationPicker from "./LocationPicker";
+import LocationPicker from "./locationPicker";
 const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
@@ -197,7 +193,7 @@ const DonorDashboard = () => {
 
                 <div className="form-group">
                   <label>Upload Image:</label>
-                  <input type="file" onChange={handleFileChange} />
+                  <input type="file"/>
                 </div>
 
                 <button type="submit" className="submit-button">Submit Donation</button>
