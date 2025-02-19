@@ -4,20 +4,18 @@ import "./ImageSlider.css";
 
 const ImageSlider = () => {
   const images = [
-    // "https://www.india.gov.in/sites/upload_files/npi/files/pm-suryaghar_0.jpg",
     "https://www.adgully.com/img/800/201708/lg.jpg",
-    // "https://powermin.gov.in/sites/default/files/styles/slider_1024x422/public/UJALA1.png?itok=YGftv199",
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      handleNext();
+      setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
     }, 3000); // Auto-slide every 3 seconds
 
     return () => clearInterval(interval); // Cleanup on unmount
-  }, [currentIndex]);
+  }, []);
 
   const handlePrev = () => {
     setCurrentIndex((prevIndex) =>
@@ -26,9 +24,7 @@ const ImageSlider = () => {
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === images.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
   };
 
   return (

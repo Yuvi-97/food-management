@@ -5,11 +5,14 @@ import axios from "axios";
 import Header from "../Header/Header";
 import Footer from "../Footer/Footer";
 import "./DonorDashboard.css";
+
+import LocationPicker from "./locationPicker";
 import api from "../api/apiInstance";
 import LocationPicker from "./LocationPicker";
 const API_URL = "/api/donations";
 
 const DonorDashboard = () => {
+
   const [activeSection, setActiveSection] = useState("");
   const [foodType, setFoodType] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -24,7 +27,6 @@ const DonorDashboard = () => {
   const [receiverContact, setReceiverContact] = useState("");
   const [openIndex, setOpenIndex] = useState(null);
   const [donationAmount, setDonationAmount] = useState("");
-
 
   useEffect(() => {
     axios.get(`${API_URL}/all`)
@@ -50,11 +52,6 @@ const DonorDashboard = () => {
       console.error("Error processing donation:", error);
     }
   };
-
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData();
@@ -69,9 +66,9 @@ const DonorDashboard = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setHistory([response.data, ...history]);
-      setShowPopup(true);
       setRewardPoints(rewardPoints + 10);
       resetForm();
+      setShowPopup(false);
     } catch (error) {
       console.error("Error submitting donation:", error);
     }
@@ -97,10 +94,10 @@ const DonorDashboard = () => {
     setOpenIndex(openIndex === index ? null : index); // Toggle open/close
   };
 
+
   return (
     <>
       <Header />
-      
       <div className="money-donation">
       <h2>Support Our Cause</h2>
       <input
@@ -209,7 +206,6 @@ const DonorDashboard = () => {
             </div>
           </div>
         )}
-      
       <Footer />
     </>
   );
