@@ -11,11 +11,18 @@ import SignUp from "./components/login-signup/signup";
 import DonorDashboard from "./components/donors/DonorDashboard";
 import AdminDashboard from "./components/Admin/Dashboard";
 import ChatBot from "./components/ngo/ngocomponents/ChatBot";
-import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon"; // Import chatbot icon
+import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon";
+import "./components/ngo/ngostyles/ChatBot.css";
 
 const Layout = () => {
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
+
+  // Toggle chatbot visibility
+  const toggleChatBot = () => {
+    console.log("ChatBot Toggled:", !chatOpen);
+    setChatOpen(!chatOpen);
+  };
 
   // Pages that should show navigation
   const showNavPages = [
@@ -28,7 +35,7 @@ const Layout = () => {
   ];
   const shouldShowNav = showNavPages.includes(location.pathname);
 
-  // Exclude chatbot icon from login & signup pages
+  // Exclude chatbot from login & signup pages
   const excludeChatBot = ["/", "/signup"];
   const shouldShowChatBot = !excludeChatBot.includes(location.pathname);
 
@@ -44,19 +51,21 @@ const Layout = () => {
           <Route path="/food-management" element={<FoodManagement />} />
           <Route path="/waste-management" element={<WasteManagement />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/donordashboard" element={<DonorDashboard />} />
         </Routes>
       </div>
 
       {/* Floating ChatBot Icon */}
-      {shouldShowChatBot && <ChatBotIcon onClick={() => setChatOpen(!chatOpen)} />}
+      {shouldShowChatBot && (
+        <ChatBotIcon onClick={toggleChatBot} />
+      )}
 
       {/* ChatBot Popup */}
       {chatOpen && (
         <div className="chat-popup">
-          <button className="close-btn" onClick={() => setChatOpen(false)}>✖</button>
+          <button className="close-btn" onClick={toggleChatBot}>✖</button>
           <ChatBot />
         </div>
       )}

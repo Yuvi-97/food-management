@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import "../ngostyles/ChatBot.css"; // Ensure this file exists
+import "../ngostyles/ChatBot.css";
 
 const API_KEY = "AIzaSyCVathu0L83oeArCLZd9VcUYp_SEMvx8to"; // Replace with your valid API key
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
@@ -22,6 +22,11 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const sendMessage = async (messageText) => {
     if (!messageText.trim()) return;
@@ -31,18 +36,16 @@ const ChatBot = () => {
     setLoading(true);
 
     if (predefinedResponses[messageText]) {
-      // Use predefined response
       const botMessage = { sender: "Bot", text: predefinedResponses[messageText] };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
       setLoading(false);
     } else {
-      // Fetch response from API for non-predefined questions
       try {
         const response = await axios.post(API_URL, {
           contents: [{ role: "user", parts: [{ text: messageText }] }],
         });
 
-        console.log("API Response:", response.data); // Debugging
+        console.log("API Response:", response.data);
 
         const botReply =
           response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
@@ -65,9 +68,10 @@ const ChatBot = () => {
   };
 
   return (
-    <div className="chat-container">
+    <div className="chat-popup">
       <h3 className="chat-title">Food Donation & Waste ChatBot</h3>
-      
+
+
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.sender === "You" ? "user" : "bot"}`}>
@@ -75,14 +79,16 @@ const ChatBot = () => {
           </div>
         ))}
         {loading && <div className="bot typing">Bot is typing...</div>}
+        <div ref={chatEndRef} />
       </div>
-
-      <div className="predefined-questions">
-        {Object.keys(predefinedResponses).map((question, index) => (
-          <button key={index} className="question-button" onClick={() => sendMessage(question)}>
-            {question}
-          </button>
-        ))}
+      <div className="predefined-questions-container">
+        <div className="predefined-questions">
+          {Object.keys(predefinedResponses).map((question, index) => (
+            <button key={index} className="question-button" onClick={() => sendMessage(question)}>
+              {question}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="chat-input-container">
