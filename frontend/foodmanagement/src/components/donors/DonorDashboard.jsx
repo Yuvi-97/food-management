@@ -20,8 +20,6 @@ const DonorDashboard = () => {
   const [history, setHistory] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [rewardPoints, setRewardPoints] = useState(0);
-  const [receiverName, setReceiverName] = useState("");
-  const [receiverContact, setReceiverContact] = useState("");
   const [openIndex, setOpenIndex] = useState(null);
   const [donationAmount, setDonationAmount] = useState("");
 
@@ -90,7 +88,6 @@ const DonorDashboard = () => {
   const toggleFAQ = (index) => {
     setOpenIndex(openIndex === index ? null : index); // Toggle open/close
   };
-
 
   return (
     <>
