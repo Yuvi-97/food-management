@@ -11,18 +11,20 @@ import SignUp from "./components/login-signup/signup";
 import DonorDashboard from "./components/donors/DonorDashboard";
 import AdminDashboard from "./components/Admin/Dashboard";
 import ChatBot from "./components/ngo/ngocomponents/ChatBot";
-import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon"; // Import chatbot icon
-import "./App.css"; // Import global styles
+import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon";
+import "./components/ngo/ngostyles/ChatBot.css";
 
 const AppContent = () => {
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
 
-  // Define paths where chatbot should be hidden
-  const hideChatBotPages = ["/", "/signup"];
-  const shouldShowChatBot = !hideChatBotPages.includes(location.pathname);
+  // Toggle chatbot visibility
+  const toggleChatBot = () => {
+    console.log("ChatBot Toggled:", !chatOpen);
+    setChatOpen(!chatOpen);
+  };
 
-  // Define paths where navigation should be visible
+  // Pages that should show navigation
   const showNavPages = [
     "/ngo-dashboard",
     "/live-tracking",
@@ -32,6 +34,10 @@ const AppContent = () => {
     "/chatbot"
   ];
   const shouldShowNav = showNavPages.includes(location.pathname);
+
+  // Exclude chatbot from login & signup pages
+  const excludeChatBot = ["/", "/signup"];
+  const shouldShowChatBot = !excludeChatBot.includes(location.pathname);
 
   return (
     <>
@@ -45,22 +51,22 @@ const AppContent = () => {
           <Route path="/food-management" element={<FoodManagement />} />
           <Route path="/waste-management" element={<WasteManagement />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/donordashboard" element={<DonorDashboard />} />
         </Routes>
       </div>
 
-      {/* Floating ChatBot Icon (Visible on all pages except login & signup) */}
-      {shouldShowChatBot && <ChatBotIcon onClick={() => setChatOpen(!chatOpen)} />}
+      {/* Floating ChatBot Icon */}
+      {shouldShowChatBot && (
+        <ChatBotIcon onClick={toggleChatBot} />
+      )}
 
       {/* ChatBot Popup */}
       {chatOpen && (
         <div className="chat-popup">
-          <div className="chat-popup-content">
-            <button className="close-btn" onClick={() => setChatOpen(false)}>✖</button>
-            <ChatBot />
-          </div>
+          <button className="close-btn" onClick={toggleChatBot}>✖</button>
+          <ChatBot />
         </div>
       )}
     </>

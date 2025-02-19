@@ -1,5 +1,5 @@
 import React from "react";
-import "../ngostyles/ChatBotIcon.css";
+import "../ngostyles/ChatBotIcon.css"; // Ensure this file exists
 
 const ChatBotIcon = ({ onClick }) => {
   return (

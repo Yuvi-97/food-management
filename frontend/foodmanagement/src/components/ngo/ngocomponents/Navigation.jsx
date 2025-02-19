@@ -25,7 +25,6 @@ const Navigation = () => {
       <li><Link to="/food-management">Food Management</Link></li>
       <li><Link to="/waste-management">Waste Management</Link></li>
       <li><Link to="/reports">Reports</Link></li>
-      <li><Link to="/chatbot">Chatbot</Link></li>
         <div className="profile">
           <FaUserCircle
             onClick={toggleProfileDropdown}
