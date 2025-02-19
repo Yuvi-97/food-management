@@ -78,8 +78,13 @@ const Header = ({ role }) => {
               </div>
             )}
           </div>
+
         </div>
       </header>
+        <div className="hero-section">
+        <h1>Make a Difference: Donate Food, Save Lives</h1>
+        <p>Your small act of kindness can help eliminate hunger and reduce food waste.</p>
+      </div>
 
       {/* Image Slider appears immediately below the header */}
       <div style={{ marginTop: "20px" }}>
