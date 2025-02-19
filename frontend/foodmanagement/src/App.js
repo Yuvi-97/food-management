@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Dashboard from "./components/ngo/ngocomponents/Dashboard";
 import LiveTracking from "./components/ngo/ngocomponents/LiveTracking";
@@ -11,20 +11,26 @@ import SignUp from "./components/login-signup/signup";
 import DonorDashboard from "./components/donors/DonorDashboard";
 import AdminDashboard from "./components/Admin/Dashboard";
 import ChatBot from "./components/ngo/ngocomponents/ChatBot";
+import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon"; // Import chatbot icon
 
 const Layout = () => {
   const location = useLocation();
+  const [chatOpen, setChatOpen] = useState(false);
 
-  // Show Navigation only on specific pages
+  // Pages that should show navigation
   const showNavPages = [
     "/ngo-dashboard",
     "/live-tracking",
     "/food-management",
     "/waste-management",
     "/reports",
-    "/chatbot",
+    "/chatbot"
   ];
   const shouldShowNav = showNavPages.includes(location.pathname);
+
+  // Exclude chatbot icon from login & signup pages
+  const excludeChatBot = ["/", "/signup"];
+  const shouldShowChatBot = !excludeChatBot.includes(location.pathname);
 
   return (
     <>
@@ -43,6 +49,17 @@ const Layout = () => {
           <Route path="/donordashboard" element={<DonorDashboard />} />
         </Routes>
       </div>
+
+      {/* Floating ChatBot Icon */}
+      {shouldShowChatBot && <ChatBotIcon onClick={() => setChatOpen(!chatOpen)} />}
+
+      {/* ChatBot Popup */}
+      {chatOpen && (
+        <div className="chat-popup">
+          <button className="close-btn" onClick={() => setChatOpen(false)}>✖</button>
+          <ChatBot />
+        </div>
+      )}
     </>
   );
 };
