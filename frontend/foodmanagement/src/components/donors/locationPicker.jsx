@@ -14,7 +14,7 @@ const LocationPicker = ({ onSelectLocation }) => {
       (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ lat: latitude, lng: longitude, address: "" });
-
+ 
         if (onSelectLocation) {
           onSelectLocation({ lat: latitude, lng: longitude });
         }
