@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import "../ngostyles/ChatBot.css";
+import "../ngostyles/ChatBot.css"; // Ensure this file exists
 
-const API_KEY = "YOUR_API_KEY"; // Keep this secure
+const API_KEY = "AIzaSyCVathu0L83oeArCLZd9VcUYp_SEMvx8to"; // Replace with your valid API key
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 const predefinedResponses = {
@@ -30,17 +30,19 @@ const ChatBot = () => {
     setMessages((prevMessages) => [...prevMessages, userMessage]);
     setLoading(true);
 
-    // Check if the message is in predefined responses
     if (predefinedResponses[messageText]) {
+      // Use predefined response
       const botMessage = { sender: "Bot", text: predefinedResponses[messageText] };
       setMessages((prevMessages) => [...prevMessages, botMessage]);
       setLoading(false);
     } else {
-      // Call API only if it's not a predefined question
+      // Fetch response from API for non-predefined questions
       try {
         const response = await axios.post(API_URL, {
-          contents: [{ parts: [{ text: messageText }] }],
+          contents: [{ role: "user", parts: [{ text: messageText }] }],
         });
+
+        console.log("API Response:", response.data); // Debugging
 
         const botReply =
           response.data?.candidates?.[0]?.content?.parts?.[0]?.text ||
