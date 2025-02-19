@@ -5,12 +5,12 @@ import LiveTracking from "./components/ngo/ngocomponents/LiveTracking";
 import FoodManagement from "./components/ngo/ngocomponents/FoodManagement";
 import WasteManagement from "./components/ngo/ngocomponents/WasteManagement";
 import Reports from "./components/ngo/ngocomponents/Reports";
-import CommunityHub from "./components/ngo/ngocomponents/CommunityHub";
 import Navigation from "./components/ngo/ngocomponents/Navigation";
 import Login from "./components/login-signup/login";
 import SignUp from "./components/login-signup/signup";
 import DonorDashboard from "./components/donors/DonorDashboard";
 import AdminDashboard from "./components/Admin/Dashboard";
+import ChatBot from "./components/ngo/ngocomponents/ChatBot";
 
 const Layout = () => {
   const location = useLocation();
@@ -22,7 +22,7 @@ const Layout = () => {
     "/food-management",
     "/waste-management",
     "/reports",
-    "/community",
+    "/chatbot",
   ];
   const shouldShowNav = showNavPages.includes(location.pathname);
 
@@ -38,7 +38,7 @@ const Layout = () => {
           <Route path="/food-management" element={<FoodManagement />} />
           <Route path="/waste-management" element={<WasteManagement />} />
           <Route path="/reports" element={<Reports />} />
-          <Route path="/community" element={<CommunityHub />} />
+          <Route path="/chatbot" element={<ChatBot />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="/donordashboard" element={<DonorDashboard />} />
         </Routes>
