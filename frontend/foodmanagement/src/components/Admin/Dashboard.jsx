@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { PieChart, Pie, Cell, Tooltip, LineChart, Line, XAxis, YAxis, CartesianGrid, Legend, ResponsiveContainer } from "recharts";
 import "./Dashboard.css";
 import Header from "../Header/Header";
@@ -23,12 +23,63 @@ const lineData = [
 const COLORS = ["#71BBB2", "#EFE9D5", "#497D74", "#27445D"];
 
 const AdminDashboard = () => {
+  const [donors, setDonors] = useState([]);
+  const [ngos, setNgos] = useState([]);
+  const [admins, setAdmins] = useState([]);
+
+  useEffect(() => {
+    fetchUsersByRole("donor", setDonors);
+    fetchUsersByRole("ngo", setNgos);
+    fetchUsersByRole("admin", setAdmins);
+  }, []);
+
+  const fetchUsersByRole = async (role, setUsers) => {
+    try {
+      const response = await fetch(`http://localhost:8080/auth/role/${role}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      setUsers(data);
+    } catch (error) {
+      console.error(`Error fetching ${role} users:`, error);
+    }
+  };
+  
+  const renderTable = (title, users) => (
+    <div className="table-container">
+      <h3>{title}</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.id}</td>
+              <td>{user.fullName}</td>
+              <td>{user.email}</td>
+              <td>{user.phone}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <>
       <Header />
       <div className="dashboard">
-        <h2>Waste Management Insights</h2>
+        <h2>Admin Dashboard</h2>
 
+        {/* Statistics Cards */}
         <div className="stats">
           <div className="card">
             <h3>🌍 Total Food Waste Reduced</h3>
@@ -36,14 +87,15 @@ const AdminDashboard = () => {
           </div>
           <div className="card">
             <h3>🏢 NGOs Supported</h3>
-            <p>25 Organizations</p>
+            <p>{ngos.length} Organizations</p>
           </div>
           <div className="card">
             <h3>🍽️ Donors Contributing</h3>
-            <p>120 Businesses</p>
+            <p>{donors.length} Businesses</p>
           </div>
         </div>
 
+        {/* Graphs Section */}
         <div className="charts">
           <div className="chart-container">
             <h3>📊 Food Waste Distribution</h3>
@@ -75,6 +127,14 @@ const AdminDashboard = () => {
           </div>
         </div>
 
+        {/* User Tables */}
+        <div className="user-tables">
+          {renderTable("Donors", donors)}
+          {renderTable("NGOs", ngos)}
+          {renderTable("Admins", admins)}
+        </div>
+
+        {/* User Education Section */}
         <div className="education">
           <h3>📚 User Education</h3>
           <ul>

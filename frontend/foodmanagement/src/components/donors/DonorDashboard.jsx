@@ -19,8 +19,6 @@ const DonorDashboard = () => {
   const [history, setHistory] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
   const [rewardPoints, setRewardPoints] = useState(0);
-  const [receiverName, setReceiverName] = useState("");
-  const [receiverContact, setReceiverContact] = useState("");
   const [openIndex, setOpenIndex] = useState(null);
   const [donationAmount, setDonationAmount] = useState("");
 
@@ -29,7 +27,6 @@ const DonorDashboard = () => {
       .then(response => setHistory(response.data))
       .catch(error => console.error("Error fetching donations:", error));
   }, []);
-
   const handleLocationSelect = async (location) => {
     const { lat, lng } = location;
   
@@ -51,7 +48,6 @@ const DonorDashboard = () => {
     }
   };
   
-
   const handleMoneyDonation = async () => {
     if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
       alert("Please enter a valid donation amount.");
@@ -59,7 +55,7 @@ const DonorDashboard = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/donate-money, { amount: donationAmount }`);
+      await axios.post(`${API_URL}/donate-money`, { amount: donationAmount });
       alert("Thank you for your donation!");
       setDonationAmount("");
     } catch (error) {
@@ -79,6 +75,7 @@ const DonorDashboard = () => {
       const response = await api.post(`${API_URL}/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+      console.log(response);
       setHistory([response.data, ...history]);
       setRewardPoints(rewardPoints + 10);
       resetForm();
@@ -108,7 +105,6 @@ const DonorDashboard = () => {
     setOpenIndex(openIndex === index ? null : index); // Toggle open/close
   };
 
-
   return (
     <>
       <Header />
@@ -127,26 +123,26 @@ const DonorDashboard = () => {
 
       <div className="donation-options">
             <button onClick={() => setShowPopup(true)}>Donate Food 🍛</button>
-            <button onClick={() => setShowPopup(true)}>Donate Waste 🗑️</button>
+            <button onClick={() => setShowPopup(true)}>Donate Waste 🗑</button>
             <button onClick={() => setActiveSection("history")}>View Donation History 📜</button>
-            <button onClick={() => setActiveSection("receive")}>Receive Food 🍽️</button>
+            <button onClick={() => setActiveSection("receive")}>Receive Food 🍽</button>
         </div>
       
       <div className="stats-section">
         <h2>India's Hunger Crisis</h2>
-        <p>⚠️ Over 190 million people in India go hungry daily.</p>
-        <p>⚠️ 7,000 people die of hunger-related causes every day.</p>
-        <p>⚠️ 40% of the food produced in India goes to waste.</p>
+        <p>⚠ Over 190 million people in India go hungry daily.</p>
+        <p>⚠ 7,000 people die of hunger-related causes every day.</p>
+        <p>⚠ 40% of the food produced in India goes to waste.</p>
         <h3>How You Can Help:</h3>
-        <p>🍽️ Donating food helps bridge the gap between excess and scarcity.</p>
+        <p>🍽 Donating food helps bridge the gap between excess and scarcity.</p>
         <p>🌱 Reducing waste means a more sustainable planet.</p>
       </div>
       
       <div className="donor-benefits">
         <h2>Why Donate?</h2>
-        <p>✔️ Earn Reward Points for Every Donation</p>
-        <p>✔️ Help those in need while reducing food waste</p>
-        <p>✔️ Get recognized as a responsible contributor to society</p>
+        <p>✔ Earn Reward Points for Every Donation</p>
+        <p>✔ Help those in need while reducing food waste</p>
+        <p>✔ Get recognized as a responsible contributor to society</p>
       </div>
 
       <div className="donor-benefits">
@@ -211,8 +207,10 @@ const DonorDashboard = () => {
 
                 <div className="form-group">
                   <label>Upload Image:</label>
-                  <input type="file"/>
+
+                  <input type="file" onChange={(e) => setFile(e.target.files[0])} accept="image/*" required />
                 </div>
+
 
                 <button type="submit" className="submit-button">Submit Donation</button>
                 <button type="button" className="close-button" onClick={() => setShowPopup(false)}>Close</button>
@@ -226,6 +224,3 @@ const DonorDashboard = () => {
 };
 
 export default DonorDashboard;
-
-
-
