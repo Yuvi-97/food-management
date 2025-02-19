@@ -81,7 +81,7 @@ const Header = ({ role }) => {
 
         </div>
       </header>
-        <div className="hero-section">
+      <div className="hero-section">
         <h1>Make a Difference: Donate Food, Save Lives</h1>
         <p>Your small act of kindness can help eliminate hunger and reduce food waste.</p>
       </div>

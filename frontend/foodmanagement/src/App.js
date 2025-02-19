@@ -14,7 +14,7 @@ import ChatBot from "./components/ngo/ngocomponents/ChatBot";
 import ChatBotIcon from "./components/ngo/ngocomponents/ChatBotIcon";
 import "./components/ngo/ngostyles/ChatBot.css";
 
-const Layout = () => {
+const AppContent = () => {
   const location = useLocation();
   const [chatOpen, setChatOpen] = useState(false);
 
@@ -76,7 +76,7 @@ const Layout = () => {
 function App() {
   return (
     <Router>
-      <Layout />
+      <AppContent />
     </Router>
   );
 }

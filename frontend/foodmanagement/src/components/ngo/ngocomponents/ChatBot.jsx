@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import "../ngostyles/ChatBot.css";
 
-const API_KEY = "AIzaSyCVathu0L83oeArCLZd9VcUYp_SEMvx8to"; // Replace with your valid API key
+const API_KEY = "AIzaSyCVathu0L83oeArCLZd9VcUYp_SEMvx8to"; // Replace with a valid API key
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
 const predefinedResponses = {
@@ -25,7 +25,9 @@ const ChatBot = () => {
   const chatEndRef = useRef(null);
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatEndRef.current) {
+      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
   const sendMessage = async (messageText) => {
@@ -71,7 +73,6 @@ const ChatBot = () => {
     <div className="chat-popup">
       <h3 className="chat-title">Food Donation & Waste ChatBot</h3>
 
-
       <div className="chat-box">
         {messages.map((msg, index) => (
           <div key={index} className={`message ${msg.sender === "You" ? "user" : "bot"}`}>
@@ -81,6 +82,7 @@ const ChatBot = () => {
         {loading && <div className="bot typing">Bot is typing...</div>}
         <div ref={chatEndRef} />
       </div>
+
       <div className="predefined-questions-container">
         <div className="predefined-questions">
           {Object.keys(predefinedResponses).map((question, index) => (
