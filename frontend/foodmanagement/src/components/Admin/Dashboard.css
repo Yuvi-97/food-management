@@ -1,73 +1,86 @@
 .dashboard {
   padding: 20px;
-  width: 92%; /* Increased width to reduce left and right margins */
-  max-width: 1100px;
+  background: #f9f9f9;
+}
+
+h2 {
   text-align: center;
-  min-height: 100vh;
-  margin: 20px auto; /* Keeps margin but reduces excess space */
+  margin-bottom: 20px;
 }
 
-/* 🏷️ Titles */
-h2, h3 {
-  color: #27445D; /* Dark Blue */
-  margin-bottom: 15px;
-}
-
-/* 📊 Stats Section */
 .stats {
   display: flex;
-  gap: 15px;
-  justify-content: center;
+  justify-content: space-around;
   margin-bottom: 20px;
 }
 
 .card {
-  flex: 1;
+  background: white;
   padding: 20px;
-  background: #71BBB2; /* Light Teal */
-  color: white;
   border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   text-align: center;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  margin: 0 10px;
 }
 
-.card p {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #27445D; /* Dark Blue */
+.card h3 {
+  margin-bottom: 10px;
 }
 
-/* 📉 Charts */
 .charts {
   display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 20px;
+  justify-content: space-around;
+  margin-bottom: 30px;
 }
 
 .chart-container {
+  background: white;
   padding: 15px;
   border-radius: 10px;
-  width: 48%;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  flex: 1;
+  margin: 0 10px;
+  text-align: center;
 }
 
-/* 📚 Education Section */
-.education {
+.user-tables {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.table-container {
+  background: white;
   padding: 15px;
   border-radius: 10px;
-  margin-top: 20px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  padding: 10px;
+  border: 1px solid #ddd;
   text-align: left;
 }
 
-.education ul {
-  list-style: none;
-  padding: 0;
+th {
+  background: #71BBB2;
+  color: white;
 }
 
-.education li {
-  padding: 8px 0;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #27445D; /* Dark Blue */
+.education {
+  margin-top: 20px;
+  padding: 20px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.education h3 {
+  margin-bottom: 10px;
 }

@@ -13,6 +13,7 @@ const LocationPicker = ({ onSelectLocation }) => {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
+
         setLocation({ lat: latitude, lng: longitude, address: "Fetching address..." });
 
         if (onSelectLocation) {
