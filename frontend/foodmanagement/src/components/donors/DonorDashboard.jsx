@@ -28,11 +28,21 @@ const DonorDashboard = () => {
       .then(response => setHistory(response.data))
       .catch(error => console.error("Error fetching donations:", error));
   }, []);
-
   const handleLocationSelect = (location) => {
-    setPickupAddress(`Lat: ${location.lat}, Lng: ${location.lng}`);
+    const { lat, lng } = location; // Extract latitude and longitude
+  
+    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.display_name) {
+          setPickupAddress({ lat, lng, address: data.display_name });
+        } else {
+          setPickupAddress({ lat, lng, address: "Address not found" });
+        }
+      })
+      .catch(() => console.error("Failed to fetch address")); // Replaced setError with console.error
   };
-
+  
   const handleMoneyDonation = async () => {
     if (!donationAmount || isNaN(donationAmount) || donationAmount <= 0) {
       alert("Please enter a valid donation amount.");
@@ -40,7 +50,7 @@ const DonorDashboard = () => {
     }
 
     try {
-      await axios.post(`${API_URL}/donate-money, { amount: donationAmount }`);
+      await axios.post(`${API_URL}/donate-money`, { amount: donationAmount });
       alert("Thank you for your donation!");
       setDonationAmount("");
     } catch (error) {
@@ -57,9 +67,10 @@ const DonorDashboard = () => {
     if (expirationDate) formData.append("expirationDate", expirationDate);
     if (file) formData.append("file", file);
     try {
-      const response = await api.post(`${API_URL}/add, formData, {
+      const response = await api.post(`${API_URL}/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
-      }`);
+      });
+      console.log(response);
       setHistory([response.data, ...history]);
       setRewardPoints(rewardPoints + 10);
       resetForm();
@@ -191,7 +202,9 @@ const DonorDashboard = () => {
 
                 <div className="form-group">
                   <label>Upload Image:</label>
+                  <input type="file" onChange={(e) => setFile(e.target.files[0])} accept="image/*" required />
                 </div>
+
 
                 <button type="submit" className="submit-button">Submit Donation</button>
                 <button type="button" className="close-button" onClick={() => setShowPopup(false)}>Close</button>
