@@ -1,141 +1,116 @@
-/* Chat Container */
-.chat-container {
-  max-width: 550px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #ffffff;
-  color: #333;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-family: "Poppins", sans-serif;
+.chat-popup {
+  position: fixed;
+  bottom: 80px;
+  right: 20px;
+  width: 350px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
 }
 
-/* Title */
 .chat-title {
   text-align: center;
-  font-size: 22px;
-  margin-bottom: 15px;
-  font-weight: 600;
-  color: #222;
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
 
-/* Chat Box */
-.chat-box {
-  min-height: 250px;
-  max-height: 350px;
-  overflow-y: auto;
-  padding: 12px;
-  border-radius: 8px;
-  background: #f8f9fa;
-  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.08);
+.predefined-questions-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  margin-bottom: 10px;
+  scrollbar-width: none; /* Hides scrollbar in Firefox */
+  -ms-overflow-style: none; /* Hides scrollbar in Internet Explorer and Edge */
 }
 
-/* Messages */
-.message {
-  padding: 12px;
-  margin: 10px 0;
-  border-radius: 10px;
-  max-width: 75%;
-  font-size: 15px;
-  line-height: 1.5;
+.predefined-questions-container::-webkit-scrollbar {
+  display: none; /* Hides scrollbar in Chrome, Safari, and Opera */
 }
 
-/* User Message */
-.user {
-  background: #007bff;
-  color: white;
-  align-self: flex-end;
-  text-align: right;
-  font-weight: 500;
-  margin-left: auto;
-  border-bottom-right-radius: 2px;
-}
-
-/* Bot Message */
-.bot {
-  background: #e9ecef;
-  color: #333;
-  text-align: left;
-  font-weight: 500;
-  border-bottom-left-radius: 2px;
-}
-
-/* Bot Typing Indicator */
-.typing {
-  font-style: italic;
-  color: #777;
-}
-
-/* Predefined Questions */
-.predefined-questions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 10px;
-  gap: 8px;
-}
 
 .question-button {
-  background: #007bff;
-  color: white;
+  flex-shrink: 0;
   padding: 8px 12px;
+  background: #26e957;
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 5px;
   cursor: pointer;
-  font-size: 14px;
-  transition: 0.3s;
+  font-size: 12px;
+  transition: background 0.3s;
 }
 
 .question-button:hover {
   background: #0056b3;
 }
 
-/* Input and Button */
+.chat-box {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 250px; /* Adjust for vertical scrolling */
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background: #f9f9f9;
+}
+
+.message {
+  padding: 8px;
+  margin: 5px 0;
+  border-radius: 5px;
+  max-width: 80%;
+}
+
+.user {
+  background: #007bff;
+  color: white;
+  align-self: flex-end;
+}
+
+.bot {
+  background: #f1f1f1;
+  align-self: flex-start;
+}
+
+.typing {
+  font-style: italic;
+  color: #555;
+}
+
 .chat-input-container {
   display: flex;
-  align-items: center;
-  margin-top: 12px;
-  gap: 10px;
+  background: white;
+  padding: 10px;
+  border-top: 1px solid #ddd;
+  position: sticky;
+  bottom: 0;
 }
 
 .chat-input {
   flex: 1;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
-  background: #fff;
-  color: #333;
-  transition: 0.3s;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
-.chat-input::placeholder {
-  color: #aaa;
-}
-
-.chat-input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 6px rgba(0, 123, 255, 0.3);
-}
-
-/* Send Button */
 .chat-button {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 8px;
+  margin-left: 5px;
+  padding: 8px 12px;
   background: #007bff;
   color: white;
-  font-weight: bold;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
-  transition: 0.3s;
+  font-size: 14px;
+  transition: background 0.3s;
 }
 
 .chat-button:hover {
   background: #0056b3;
-}
-
-.chat-button:disabled {
-  background: #888;
-  cursor: not-allowed;
 }
