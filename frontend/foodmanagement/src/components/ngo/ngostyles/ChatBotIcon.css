@@ -1,0 +1,103 @@
+/* Chatbot Icon */
+.chatbot-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.chatbot-icon:hover {
+  background-color: #0056b3;
+  transform: scale(1.1);
+}
+
+/* Chat Popup */
+.chat-popup {
+  position: fixed;
+  width: 380px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  border: 1px solid #ddd;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  cursor: grab;
+}
+
+/* Chat Header */
+.chat-header {
+  background: #007bff;
+  color: white;
+  padding: 12px 16px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: move; /* Indicate it's draggable */
+}
+
+/* Close Button */
+.close-btn {
+  background: transparent;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  padding: 5px;
+  transition: 0.3s;
+}
+
+.close-btn:hover {
+  color: #ddd;
+}
+
+/* Chat Content */
+.chat-content {
+  padding: 15px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Input Area */
+.chat-input-container {
+  display: flex;
+  padding: 10px;
+  background: #f1f1f1;
+  border-top: 1px solid #ddd;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+}
+
+.chat-send {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  margin-left: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.chat-send:hover {
+  background: #0056b3;
+}
