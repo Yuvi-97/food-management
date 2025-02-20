@@ -39,6 +39,7 @@ public class DonationController {
         }
     }
 
+    // ✅ Add new donation with image upload
     @PostMapping("/add")
     public ResponseEntity<Donation> addDonation(
             @RequestParam("foodType") String foodType,
@@ -50,12 +51,6 @@ public class DonationController {
 
         String imageUrl = null;
         if (file != null && !file.isEmpty()) {
-            File directory = new File(UPLOAD_DIR);
-            if (!directory.exists()) {
-                directory.mkdirs();
-            }
-
-            // ✅ Store with a unique filename
             String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();
             String filePath = UPLOAD_DIR + fileName;
             file.transferTo(new File(filePath));
@@ -68,21 +63,35 @@ public class DonationController {
         donation.setPickupAddress(pickupAddress);
         donation.setPickupTime(pickupTime);
         donation.setExpirationDate(expirationDate);
-        donation.setImageUrl(imageUrl); // ✅ Save relative filename, not full path
+        donation.setImageUrl(imageUrl);
         donation.setStatus("Pending"); // Default status
 
         Donation savedDonation = donationService.saveDonation(donation);
         return ResponseEntity.ok(savedDonation);
     }
 
+    // ✅ Fetch all donations with full image URL
     @GetMapping("/all")
     public ResponseEntity<List<Donation>> getAllDonations() {
-        return ResponseEntity.ok(donationService.getAllDonations());
+        List<Donation> donations = donationService.getAllDonations();
+        donations.forEach(donation -> {
+            if (donation.getImageUrl() != null) {
+                donation.setImageUrl("http://localhost:8080/api/donations/image/" + donation.getImageUrl());
+            }
+        });
+        return ResponseEntity.ok(donations);
     }
 
+    // ✅ Fetch only pending donations with full image URL
     @GetMapping("/pending")
     public ResponseEntity<List<Donation>> getPendingDonations() {
-        return ResponseEntity.ok(donationService.getPendingDonations());
+        List<Donation> pendingDonations = donationService.getPendingDonations();
+        pendingDonations.forEach(donation -> {
+            if (donation.getImageUrl() != null) {
+                donation.setImageUrl("http://localhost:8080/api/donations/image/" + donation.getImageUrl());
+            }
+        });
+        return ResponseEntity.ok(pendingDonations);
     }
 
     // ✅ Update status of a donation (Pending, Rejected, Completed)
@@ -98,7 +107,7 @@ public class DonationController {
         return ResponseEntity.notFound().build();
     }
 
-    // ✅ Corrected image retrieval (use only filename)
+    // ✅ Retrieve image correctly (serves from backend)
     @GetMapping("/image/{filename}")
     public ResponseEntity<Resource> getImage(@PathVariable String filename) {
         File file = Paths.get(UPLOAD_DIR, filename).toFile();
@@ -108,10 +117,11 @@ public class DonationController {
 
         Resource resource = new FileSystemResource(file);
         return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE)
+                .header(HttpHeaders.CONTENT_TYPE, MediaType.IMAGE_JPEG_VALUE) // Change if using PNG
                 .body(resource);
     }
 
+    // ✅ Delete donation by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteDonation(@PathVariable Long id) {
         donationService.deleteDonation(id);

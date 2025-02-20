@@ -3,11 +3,6 @@ import { useNavigate } from "react-router-dom";
 import api from "../../api/apiInstance";
 import "../ngostyles/FoodManagement.css";
 
-const calculateETA = (distanceKm) => {
-  const timeInHours = distanceKm / 40;
-  return Math.round(timeInHours * 60);
-};
-
 const FoodManagement = () => {
   const [liveRequests, setLiveRequests] = useState([]);
   const [acceptedRequests, setAcceptedRequests] = useState([]);
@@ -25,13 +20,10 @@ const FoodManagement = () => {
       const pendingRes = await api.get("/api/donations/pending");
       const allRes = await api.get("/api/donations/all");
 
-      const allDonations = allRes.data;
-      const pendingDonations = pendingRes.data;
-
-      setLiveRequests(pendingDonations);
-      setAcceptedRequests(allDonations.filter((d) => d.status === "In Progress"));
-      setDeclinedRequests(allDonations.filter((d) => d.status === "Rejected"));
-      setOrderHistory(allDonations);
+      setLiveRequests(pendingRes.data);
+      setAcceptedRequests(allRes.data.filter((d) => d.status === "In Progress"));
+      setDeclinedRequests(allRes.data.filter((d) => d.status === "Rejected"));
+      setOrderHistory(allRes.data);
     } catch (error) {
       console.error("Error fetching donation data:", error);
     }
@@ -46,10 +38,6 @@ const FoodManagement = () => {
     } catch (error) {
       console.error("Error updating donation status:", error);
     }
-  };
-
-  const handleTrackOrder = (order) => {
-    navigate("/live-tracking", { state: { order } });
   };
 
   return (
@@ -72,6 +60,7 @@ const FoodManagement = () => {
       </div>
 
       <div className="requests-container">
+        {/* Live Requests */}
         {selectedTab === "liveRequests" && (
           <div className="live-requests">
             <h3>Live Requests (Pending Donations)</h3>
@@ -82,6 +71,11 @@ const FoodManagement = () => {
                     <strong>{request.foodType}</strong> - {request.quantity} kg
                     <br />
                     Address: {request.pickupAddress}
+                    <br />
+                    {/* Display Image If Available */}
+                    {request.imageUrl && (
+                      <img src={request.imageUrl} alt="Donation" width="150" height="100" />
+                    )}
                     <br />
                     <button className="btn-accept" onClick={() => updateDonationStatus(request.id, "In Progress")}>
                       Accept
@@ -98,6 +92,7 @@ const FoodManagement = () => {
           </div>
         )}
 
+        {/* Accepted Requests */}
         {selectedTab === "acceptedRequests" && (
           <div className="accepted-requests">
             <h3>Accepted Requests (In Progress Donations)</h3>
@@ -109,9 +104,16 @@ const FoodManagement = () => {
                     <br />
                     Address: {request.pickupAddress}
                     <br />
+                    {/* Display Image If Available */}
+                    {request.imageUrl && (
+                      <img src={request.imageUrl} alt="Accepted Donation" width="150" height="100" />
+                    )}
+                    <br />
                     Status: 🚚 In Progress
                     <br />
-                    <button className="btn-track" onClick={() => handleTrackOrder(request)}>Track Order</button>
+                    <button className="btn-track" onClick={() => navigate("/live-tracking", { state: { order: request } })}>
+                      Track Order
+                    </button>
                     <button className="btn-finish" onClick={() => updateDonationStatus(request.id, "Completed")}>
                       Finish
                     </button>
@@ -124,6 +126,7 @@ const FoodManagement = () => {
           </div>
         )}
 
+        {/* Declined Orders */}
         {selectedTab === "declinedRequests" && (
           <div className="declined-requests">
             <h3>Declined Orders</h3>
@@ -135,6 +138,11 @@ const FoodManagement = () => {
                     <br />
                     Address: {request.pickupAddress}
                     <br />
+                    {/* Display Image If Available */}
+                    {request.imageUrl && (
+                      <img src={request.imageUrl} alt="Declined Donation" width="150" height="100" />
+                    )}
+                    <br />
                     Status: ❌ Rejected
                   </li>
                 ))
@@ -145,6 +153,7 @@ const FoodManagement = () => {
           </div>
         )}
 
+        {/* Order History */}
         {selectedTab === "orderHistory" && (
           <div className="order-history">
             <h3>Order History (All Donations)</h3>
@@ -155,6 +164,11 @@ const FoodManagement = () => {
                     <strong>{request.foodType}</strong> - {request.quantity} kg
                     <br />
                     Address: {request.pickupAddress}
+                    <br />
+                    {/* Display Image If Available */}
+                    {request.imageUrl && (
+                      <img src={request.imageUrl} alt="Order History Donation" width="150" height="100" />
+                    )}
                     <br />
                     Status: {request.status}
                   </li>

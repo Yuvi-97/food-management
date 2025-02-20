@@ -108,18 +108,6 @@ const DonorDashboard = () => {
   return (
     <>
       <Header />
-      <div className="money-donation">
-      <h2>Support Our Cause</h2>
-      <input
-        type="number"
-        placeholder="Enter amount (₹)"
-        value={donationAmount}
-        onChange={(e) => setDonationAmount(e.target.value)}
-      />
-      <button onClick={handleMoneyDonation} className="donate-money-button">
-        Donate Money
-      </button>
-    </div>
 
       <div className="donation-options">
             <button onClick={() => setShowPopup(true)}>Donate Food 🍛</button>
@@ -168,6 +156,18 @@ const DonorDashboard = () => {
       </div>
       
       
+      <div className="money-donation">
+      <h2>Support Our Cause</h2>
+      <input
+        type="number"
+        placeholder="Enter amount (₹)"
+        value={donationAmount}
+        onChange={(e) => setDonationAmount(e.target.value)}
+      />
+      <button onClick={handleMoneyDonation} className="donate-money-button">
+        Donate Money
+      </button>
+    </div>
       
       {activeSection && (
         <button className="reset-button" onClick={resetForm}>Go Back</button>
