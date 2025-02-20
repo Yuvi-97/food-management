@@ -35,7 +35,7 @@ const AdminDashboard = () => {
 
   const fetchUsersByRole = async (role, setUsers) => {
     try {
-      const response = await fetch(`http://localhost:8080/auth/role/${role}`);
+      const response = await fetch(`http://192.168.110.70:8080/auth/role/${role}`);
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);

@@ -14,7 +14,7 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:8080/auth/login", {
+      const response = await axios.post("http://192.168.110.70:8080/auth/login", {
         email,
         password,
         role: userRole,

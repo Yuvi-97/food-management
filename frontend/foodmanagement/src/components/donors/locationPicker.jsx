@@ -11,28 +11,15 @@ const LocationPicker = ({ onSelectLocation }) => {
     }
 
     navigator.geolocation.getCurrentPosition(
-      async (position) => {
+      (position) => {
         const { latitude, longitude } = position.coords;
-
-        setLocation({ lat: latitude, lng: longitude, address: "Fetching address..." });
+        setLocation({ lat: latitude, lng: longitude, address: "" });
 
         if (onSelectLocation) {
           onSelectLocation({ lat: latitude, lng: longitude });
         }
-
-        // Fetch address using reverse geocoding
-        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.display_name) {
-              setLocation({ lat: latitude, lng: longitude, address: data.display_name });
-            } else {
-              setLocation({ lat: latitude, lng: longitude, address: "Address not found" });
-            }
-          })
-          .catch(() => setError("Failed to fetch address"));
       },
-      () => {
+      (error) => {
         setError("Unable to retrieve your location.");
       }
     );
@@ -44,6 +31,20 @@ const LocationPicker = ({ onSelectLocation }) => {
       <button onClick={getCurrentLocation}>📍 Use Current Location</button>
 
       {error && <p style={{ color: "red" }}>{error}</p>}
+
+      {location.lat && (
+        <div>
+          <p><strong>Latitude:</strong> {location.lat}</p>
+          <p><strong>Longitude:</strong> {location.lng}</p>
+          <label>Address (optional):</label>
+          <input
+            type="text"
+            value={location.address}
+            onChange={(e) => setLocation({ ...location, address: e.target.value })}
+            placeholder="Enter your address"
+          />
+        </div>
+      )}
     </div>
   );
 };
